@@ -1,12 +1,16 @@
 # main.py - Main application that uses all modules
 from camera_manager import CameraManager
 from hand_tracker import HandTracker
+from Volume_Control import VolumeController
+
 import cv2
 
 def main():
     # Initialize components
     camera = CameraManager()
     hand_tracker = HandTracker()
+    volume_controller = VolumeController()
+
     
     try:
         # Start camera
@@ -38,11 +42,16 @@ def main():
                     
                     # Calculate distance
                     distance = hand_tracker.calculate_distance(thumb_pos, index_pos)
+                    volume_percent = volume_controller.set_volume(distance)
+
                     
                     # Draw visualization
                     hand_tracker.draw_finger_visualization(
                         frame, thumb_pos, index_pos, distance
                     )
+                    cv2.putText(frame, f"Volume: {volume_percent}%", (50, 150),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+
             
             # Display UI
             cv2.putText(frame, "Hand Gesture Volume Control", (50, 50), 
